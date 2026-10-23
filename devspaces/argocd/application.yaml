@@ -1,0 +1,46 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devspaces
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: devspaces
+
+  source:
+    repoURL: https://github.com/ebeaudoi/ocp-gitops-devspace.git
+    targetRevision: main
+    path: devspaces/overlays/full
+
+  destination:
+    server: https://kubernetes.default.svc
+    # Resources target their own namespaces via kustomize
+    namespace: openshift-devspaces
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: 15
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 5m
+
+  ignoreDifferences:
+    - group: operators.coreos.com
+      kind: Subscription
+      jsonPointers:
+        - /status
+        - /spec/startingCSV
+    - group: org.eclipse.che
+      kind: CheCluster
+      jsonPointers:
+        - /status

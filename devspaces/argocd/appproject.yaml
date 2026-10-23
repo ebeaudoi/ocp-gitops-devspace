@@ -1,0 +1,35 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: devspaces
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: OpenShift Dev Spaces operator and CheCluster instance
+
+  sourceRepos:
+    - https://github.com/ebeaudoi/ocp-gitops-devspace.git
+    - git@github.com:ebeaudoi/ocp-gitops-devspace.git
+
+  destinations:
+    - namespace: openshift-gitops
+      server: https://kubernetes.default.svc
+    - namespace: openshift-operators
+      server: https://kubernetes.default.svc
+    - namespace: openshift-devspaces
+      server: https://kubernetes.default.svc
+    # User workspace namespaces created by Dev Spaces (template: <username>-devspaces)
+    - namespace: "*-devspaces"
+      server: https://kubernetes.default.svc
+
+  # Operator + CheCluster create cluster-scoped objects (CRDs, RBAC, SCCs).
+  # Destinations above still limit where namespaced resources may land.
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
