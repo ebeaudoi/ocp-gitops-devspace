@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: openshift-gitops
 
 resources:
+  - argocd-devspaces-controller-rbac.yaml
   - appproject.yaml
   - application.yaml
 

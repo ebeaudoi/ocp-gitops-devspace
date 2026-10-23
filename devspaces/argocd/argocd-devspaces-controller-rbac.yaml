@@ -1,0 +1,68 @@
+# Grant OpenShift GitOps application-controller permission to sync Dev Spaces
+# manifests (Subscription, Namespace, NetworkPolicy, CheCluster, optional DW config).
+# Default GitOps roles do not always include networking.k8s.io or org.eclipse.che.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openshift-gitops-argocd-devspaces
+rules:
+  - apiGroups:
+      - org.eclipse.che
+    resources:
+      - "*"
+    verbs:
+      - "*"
+  - apiGroups:
+      - controller.devfile.io
+    resources:
+      - "*"
+    verbs:
+      - "*"
+  - apiGroups:
+      - workspace.devfile.io
+    resources:
+      - "*"
+    verbs:
+      - "*"
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - "*"
+  - apiGroups:
+      - operators.coreos.com
+    resources:
+      - subscriptions
+      - operatorgroups
+      - clusterserviceversions
+      - installplans
+      - catalogsources
+    verbs:
+      - "*"
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: openshift-gitops-argocd-devspaces
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: openshift-gitops-argocd-devspaces
+subjects:
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-application-controller
+    namespace: openshift-gitops

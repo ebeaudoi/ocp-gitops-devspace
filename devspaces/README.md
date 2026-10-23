@@ -93,6 +93,7 @@ oc apply -k devspaces/argocd
 
 That creates:
 
+- **ClusterRole / ClusterRoleBinding** for the GitOps application-controller (NetworkPolicy, CheCluster, Subscription, …)
 - **AppProject** `devspaces`
 - **Application** `devspaces` — syncs `overlays/full` with auto-sync, prune, and self-heal
 

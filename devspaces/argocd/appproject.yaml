@@ -24,6 +24,8 @@ spec:
 
   # Operator + CheCluster create cluster-scoped objects (CRDs, RBAC, SCCs).
   # Destinations above still limit where namespaced resources may land.
+  # RBAC for the application-controller is applied out-of-band via
+  # argocd-devspaces-controller-rbac.yaml (oc apply -k devspaces/argocd).
   clusterResourceWhitelist:
     - group: "*"
       kind: "*"
