@@ -45,7 +45,8 @@ devspaces/
 | Operator | `Subscription` (`devspaces`) | `openshift-operators` | Installs Dev Spaces (+ DevWorkspace) operator |
 | Operand NS | `Namespace` | `openshift-devspaces` | Home for CheCluster / dashboard / gateway |
 | Instance | `CheCluster` (`devspaces`) | `openshift-devspaces` | Deploys Dev Spaces services |
-| NetPol | `NetworkPolicy` | `openshift-devspaces` | Allow traffic from the Dev Spaces namespace |
+| NetPol | `NetworkPolicy` (`allow-from-openshift-devspaces`) | `openshift-devspaces` | Allow pod-to-pod traffic inside the NS |
+| NetPol | `NetworkPolicy` (`allow-from-openshift-ingress`) | `openshift-devspaces` | Allow OpenShift router → gateway (required for the Route) |
 
 Sync order (Argo CD waves):
 
@@ -171,3 +172,4 @@ Edit variables in [`../update-values.sh`](../update-values.sh), set `UPDATE_DEVS
 - Channel is typically **`stable`**.
 - Workspace namespaces are auto-provisioned as `<username>-devspaces` (see CheCluster `defaultNamespace.template`).
 - The Dev Workspace Operator is pulled in by the Dev Spaces Subscription / CheCluster — no separate install is required for the default path.
+- If the dashboard Route shows **Application is not available** while pods are `Running`, confirm `allow-from-openshift-ingress` exists — without it the router cannot reach `che-gateway`.

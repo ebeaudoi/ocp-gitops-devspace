@@ -24,6 +24,14 @@ patches:
         value:
           argocd.argoproj.io/sync-wave: "1"
   - target:
+      kind: NetworkPolicy
+      name: allow-from-openshift-ingress
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          argocd.argoproj.io/sync-wave: "1"
+  - target:
       kind: CheCluster
       name: devspaces
     patch: |-
