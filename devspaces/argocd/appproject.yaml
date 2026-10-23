@@ -4,8 +4,6 @@ kind: AppProject
 metadata:
   name: devspaces
   namespace: openshift-gitops
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   description: OpenShift Dev Spaces operator and CheCluster instance
 
